@@ -22,9 +22,9 @@ torch.backends.cudnn.benchmark = True
 # ------------prepare data loader------------
 data_mode = cfg.DATASET
 
-dataset_import = importlib._import_module("datasets." + data_mode)
-loading_data = getattr(dataset_import, "loading_data")
-cfg_data = getattr(dataset_import, "cfg_data")
+dataset_import_path = "datasets." + data_mode
+loading_data = getattr(importlib._import_module(dataset_import_path + ".loading_data"), "loading_data")
+cfg_data = getattr(importlib._import_module(dataset_import_path + ".setting"), "cfg_data")
 
 # ------------Prepare Trainer------------
 net = cfg.NET
