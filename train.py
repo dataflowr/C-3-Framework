@@ -1,6 +1,7 @@
 import os
 import numpy as np
 import torch
+import importlib
 
 from config import cfg
 
@@ -20,31 +21,10 @@ torch.backends.cudnn.benchmark = True
 
 # ------------prepare data loader------------
 data_mode = cfg.DATASET
-if data_mode == "SHHA":
-    from datasets.SHHA.loading_data import loading_data
-    from datasets.SHHA.setting import cfg_data
-elif data_mode == "SHHB":
-    from datasets.SHHB.loading_data import loading_data
-    from datasets.SHHB.setting import cfg_data
-elif data_mode == "QNRF":
-    from datasets.QNRF.loading_data import loading_data
-    from datasets.QNRF.setting import cfg_data
-elif data_mode == "UCF50":
-    from datasets.UCF50.loading_data import loading_data
-    from datasets.UCF50.setting import cfg_data
-elif data_mode == "WE":
-    from datasets.WE.loading_data import loading_data
-    from datasets.WE.setting import cfg_data
-elif data_mode == "GCC":
-    from datasets.GCC.loading_data import loading_data
-    from datasets.GCC.setting import cfg_data
-elif data_mode == "Mall":
-    from datasets.Mall.loading_data import loading_data
-    from datasets.Mall.setting import cfg_data
-elif data_mode == "UCSD":
-    from datasets.UCSD.loading_data import loading_data
-    from datasets.UCSD.setting import cfg_data
 
+dataset_import_path = "datasets." + data_mode
+loading_data = getattr(importlib._import_module(dataset_import_path + ".loading_data"), "loading_data")
+cfg_data = getattr(importlib._import_module(dataset_import_path + ".setting"), "cfg_data")
 
 # ------------Prepare Trainer------------
 net = cfg.NET
@@ -60,7 +40,7 @@ if net in [
 ]:
     from trainer import Trainer
 elif net in ["SANet"]:
-    from trainer_for_M2TCC import Trainer  # double losses but signle output
+    from trainer_for_M2TCC import Trainer  # double losses but single output
 elif net in ["CMTL"]:
     from trainer_for_CMTL import Trainer  # double losses and double outputs
 
