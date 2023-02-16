@@ -6,22 +6,26 @@ from torch.autograd import Variable
 from torch.optim.lr_scheduler import StepLR
 
 from models.M2TCC import CrowdCounter
-from config import cfg
+from config import cfg as default_cfg
 from misc.utils import *
 import pdb
 
 
 class Trainer:
-    def __init__(self, dataloader, cfg_data, pwd):
+    def __init__(self, dataloader, cfg_data, pwd, cfg=None):
 
         self.cfg_data = cfg_data
+        if cfg is None:
+            self.cfg = default_cfg
+        else:
+            self.cfg = cfg
 
-        self.data_mode = cfg.DATASET
-        self.exp_name = cfg.EXP_NAME
-        self.exp_path = cfg.EXP_PATH
+        self.data_mode = self.cfg.DATASET
+        self.exp_name = self.cfg.EXP_NAME
+        self.exp_path = self.cfg.EXP_PATH
         self.pwd = pwd
 
-        self.net_name = cfg.NET
+        self.net_name = self.cfg.NET
 
         if self.net_name in ["SANet"]:
             loss_1_fn = nn.MSELoss()
@@ -29,13 +33,13 @@ class Trainer:
 
             loss_2_fn = pytorch_ssim.SSIM(window_size=11)
 
-        self.net = CrowdCounter(cfg.GPU_ID, self.net_name, loss_1_fn, loss_2_fn).cuda()
+        self.net = CrowdCounter(self.cfg.GPU_ID, self.net_name, loss_1_fn, loss_2_fn).cuda()
         self.optimizer = optim.Adam(
-            self.net.CCN.parameters(), lr=cfg.LR, weight_decay=1e-4
+            self.net.CCN.parameters(), lr=self.cfg.LR, weight_decay=1e-4
         )
         # self.optimizer = optim.SGD(self.net.parameters(), cfg.LR, momentum=0.95,weight_decay=5e-4)
         self.scheduler = StepLR(
-            self.optimizer, step_size=cfg.NUM_EPOCH_LR_DECAY, gamma=cfg.LR_DECAY
+            self.optimizer, step_size=self.cfg.NUM_EPOCH_LR_DECAY, gamma=self.cfg.LR_DECAY
         )
 
         self.train_record = {"best_mae": 1e20, "best_mse": 1e20, "best_model_name": ""}
@@ -44,13 +48,13 @@ class Trainer:
         self.epoch = 0
         self.i_tb = 0
 
-        if cfg.PRE_GCC:
-            self.net.load_state_dict(torch.load(cfg.PRE_GCC_MODEL))
+        if self.cfg.PRE_GCC:
+            self.net.load_state_dict(torch.load(self.cfg.PRE_GCC_MODEL))
 
         self.train_loader, self.val_loader, self.restore_transform = dataloader()
 
-        if cfg.RESUME:
-            latest_state = torch.load(cfg.RESUME_PATH)
+        if self.cfg.RESUME:
+            latest_state = torch.load(self.cfg.RESUME_PATH)
             self.net.load_state_dict(latest_state["net"])
             self.optimizer.load_state_dict(latest_state["optimizer"])
             self.scheduler.load_state_dict(latest_state["scheduler"])
@@ -61,15 +65,15 @@ class Trainer:
             self.exp_name = latest_state["exp_name"]
 
         self.writer, self.log_txt = logger(
-            self.exp_path, self.exp_name, self.pwd, "exp", resume=cfg.RESUME
+            self.exp_path, self.exp_name, self.pwd, "exp", resume=self.cfg.RESUME
         )
 
     def forward(self):
 
         # self.validate_V3()
-        for epoch in range(self.epoch, cfg.MAX_EPOCH):
+        for epoch in range(self.epoch, self.cfg.MAX_EPOCH):
             self.epoch = epoch
-            if epoch > cfg.LR_DECAY_START:
+            if epoch > self.cfg.LR_DECAY_START:
                 self.scheduler.step()
 
             # training
@@ -81,7 +85,7 @@ class Trainer:
             print("=" * 20)
 
             # validation
-            if epoch % cfg.VAL_FREQ == 0 or epoch > cfg.VAL_DENSE_START:
+            if epoch % self.cfg.VAL_FREQ == 0 or epoch > self.cfg.VAL_DENSE_START:
                 self.timer["val time"].tic()
                 if self.data_mode in ["SHHA", "SHHB", "QNRF", "UCF50"]:
                     self.validate_V1()
@@ -107,7 +111,7 @@ class Trainer:
             loss.backward()
             self.optimizer.step()
 
-            if (i + 1) % cfg.PRINT_FREQ == 0:
+            if (i + 1) % self.cfg.PRINT_FREQ == 0:
                 self.i_tb += 1
                 self.writer.add_scalar("train_loss", loss.item(), self.i_tb)
                 self.writer.add_scalar("train_loss1", loss1.item(), self.i_tb)
