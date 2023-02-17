@@ -8,7 +8,7 @@ import pdb
 
 import pandas as pd
 
-from setting import cfg_data 
+from datasets.GCC.setting import cfg_data 
 
 class GCC(data.Dataset):
     def __init__(self, list_file, mode, main_transform=None, img_transform=None, gt_transform=None):
