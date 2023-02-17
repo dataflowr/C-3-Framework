@@ -1,7 +1,7 @@
 import os
 import numpy as np
 import torch
-import importlib
+import imp
 
 from config import cfg
 
@@ -22,9 +22,9 @@ torch.backends.cudnn.benchmark = True
 # ------------prepare data loader------------
 data_mode = cfg.DATASET
 
-dataset_import_path = "datasets." + data_mode
-loading_data = getattr(importlib._import_module(dataset_import_path + ".loading_data"), "loading_data")
-cfg_data = getattr(importlib._import_module(dataset_import_path + ".setting"), "cfg_data")
+dataset_import_path = "datasets/" + data_mode
+loading_data = getattr(imp.load_source("loader", dataset_import_path + "/loading_data.py"), "loading_data")
+cfg_data = getattr(imp.load_source("settings", dataset_import_path + "/setting.py"), "cfg_data")
 
 # ------------Prepare Trainer------------
 net = cfg.NET
