@@ -1,7 +1,7 @@
 import torchvision.transforms as standard_transforms
 from torch.utils.data import DataLoader
 import misc.transforms as own_transforms
-from datasets.SHHB import SHHB
+from datasets.SHHB.SHHB import SHHB
 from datasets.SHHB.setting import cfg_data
 import torch
 

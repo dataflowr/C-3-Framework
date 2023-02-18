@@ -1,7 +1,7 @@
 import torchvision.transforms as standard_transforms
 from torch.utils.data import DataLoader
 import misc.transforms as own_transforms
-from datasets.SHHA import SHHA
+from datasets.SHHA.SHHA import SHHA
 from datasets.SHHA.setting import cfg_data
 import torch
 import random

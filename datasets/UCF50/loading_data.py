@@ -1,7 +1,7 @@
 import torchvision.transforms as standard_transforms
 from torch.utils.data import DataLoader
 import misc.transforms as own_transforms
-from datasets.UCF50 import UCF50
+from datasets.UCF50.UCF50 import UCF50
 from datasets.UCF50.setting import cfg_data
 import torch
 import random
