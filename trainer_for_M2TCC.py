@@ -33,13 +33,17 @@ class Trainer:
 
             loss_2_fn = pytorch_ssim.SSIM(window_size=11)
 
-        self.net = CrowdCounter(self.cfg.GPU_ID, self.net_name, loss_1_fn, loss_2_fn).cuda()
+        self.net = CrowdCounter(
+            self.cfg.GPU_ID, self.net_name, loss_1_fn, loss_2_fn
+        ).cuda()
         self.optimizer = optim.Adam(
             self.net.CCN.parameters(), lr=self.cfg.LR, weight_decay=1e-4
         )
         # self.optimizer = optim.SGD(self.net.parameters(), cfg.LR, momentum=0.95,weight_decay=5e-4)
         self.scheduler = StepLR(
-            self.optimizer, step_size=self.cfg.NUM_EPOCH_LR_DECAY, gamma=self.cfg.LR_DECAY
+            self.optimizer,
+            step_size=self.cfg.NUM_EPOCH_LR_DECAY,
+            gamma=self.cfg.LR_DECAY,
         )
 
         self.train_record = {"best_mae": 1e20, "best_mse": 1e20, "best_model_name": ""}

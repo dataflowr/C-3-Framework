@@ -55,7 +55,10 @@ def main():
 def test(file_list, model_path):
 
     net = CrowdCounter(cfg.GPU_ID, cfg.NET)
-    net.load_state_dict(torch.load(model_path))
+
+    state_dict = torch.load(model_path)
+    state_dict = {k.replace("module.", ""):v for k,v in state_dict.items()}
+    net.load_state_dict(state_dict)
     net.cuda()
     net.eval()
 
