@@ -25,7 +25,6 @@ class Trainer:
         self.exp_path = self.cfg.EXP_PATH
         self.pwd = pwd
 
-
         self.net_name = self.cfg.NET
         self.net = CrowdCounter(self.cfg.GPU_ID, self.net_name).cuda()
         self.optimizer = optim.Adam(
@@ -33,7 +32,9 @@ class Trainer:
         )
         # self.optimizer = optim.SGD(self.net.parameters(), self.cfg.LR, momentum=0.95,weight_decay=5e-4)
         self.scheduler = StepLR(
-            self.optimizer, step_size=self.cfg.NUM_EPOCH_LR_DECAY, gamma=self.cfg.LR_DECAY
+            self.optimizer,
+            step_size=self.cfg.NUM_EPOCH_LR_DECAY,
+            gamma=self.cfg.LR_DECAY,
         )
 
         self.train_record = {"best_mae": 1e20, "best_mse": 1e20, "best_model_name": ""}

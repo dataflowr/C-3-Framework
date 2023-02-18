@@ -8,6 +8,7 @@ from misc.utils import *
 
 # model_path = '../PyTorch_Pretrained/vgg16-397923af.pth'
 
+
 class VGG(nn.Module):
     def __init__(self, pretrained=True):
         super(VGG, self).__init__()
@@ -17,16 +18,15 @@ class VGG(nn.Module):
         features = list(vgg.features.children())
         self.features4 = nn.Sequential(*features[0:23])
 
-
-        self.de_pred = nn.Sequential(Conv2d(512, 128, 1, same_padding=True, NL='relu'),
-                                     Conv2d(128, 1, 1, same_padding=True, NL='relu'))
-
-
+        self.de_pred = nn.Sequential(
+            Conv2d(512, 128, 1, same_padding=True, NL="relu"),
+            Conv2d(128, 1, 1, same_padding=True, NL="relu"),
+        )
 
     def forward(self, x):
-        x = self.features4(x)       
+        x = self.features4(x)
         x = self.de_pred(x)
 
-        x = F.upsample(x,scale_factor=8)
+        x = F.upsample(x, scale_factor=8)
 
         return x
