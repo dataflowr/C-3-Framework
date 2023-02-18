@@ -3,7 +3,7 @@ from torch.utils.data import DataLoader
 
 # from misc.data import DataLoader
 import misc.transforms as own_transforms
-from datasets.Mall import Mall
+from datasets.Mall.Mall import Mall
 from datasets.Mall.setting import cfg_data
 import torch
 

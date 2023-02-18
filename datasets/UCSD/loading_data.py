@@ -1,7 +1,7 @@
 import torchvision.transforms as standard_transforms
 from torch.utils.data import DataLoader
 import misc.transforms as own_transforms
-from datasets.UCSD import UCSD
+from datasets.UCSD.UCSD import UCSD
 from datasets.UCSD.setting import cfg_data
 import torch
 

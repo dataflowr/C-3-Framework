@@ -1,7 +1,7 @@
 import torchvision.transforms as standard_transforms
 from torch.utils.data import DataLoader
 import misc.transforms as own_transforms
-from datasets.GCC import GCC
+from datasets.GCC.GCC import GCC
 from datasets.GCC.setting import cfg_data
 import torch
 import random
