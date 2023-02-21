@@ -4,11 +4,11 @@ from torch.utils.data import DataLoader
 # from misc.data import DataLoader
 import misc.transforms as own_transforms
 from datasets.Mall.Mall import Mall
-from datasets.Mall.setting import cfg_data
+from datasets.Mall.setting import cfg_data as default_cfg_data
 import torch
 
 
-def loading_data(train_mode):
+def loading_data(train_mode, cfg_data):
 
     mean_std = cfg_data.MEAN_STD
     log_para = cfg_data.LOG_PARA

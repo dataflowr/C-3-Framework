@@ -2,12 +2,12 @@ import torchvision.transforms as standard_transforms
 from torch.utils.data import DataLoader
 import misc.transforms as own_transforms
 from datasets.GCC.GCC import GCC
-from datasets.GCC.setting import cfg_data
+from datasets.GCC.setting import cfg_data as default_cfg_data
 import torch
 import random
 
 
-def loading_data():
+def loading_data(cfg_data):
     mean_std = cfg_data.MEAN_STD
     log_para = cfg_data.LOG_PARA
     train_main_transform = own_transforms.Compose(

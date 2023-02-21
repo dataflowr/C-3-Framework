@@ -28,7 +28,7 @@ class Trainer:
 
         self.net_name = self.cfg.NET
 
-        self.train_loader, self.val_loader, self.restore_transform = dataloader()
+        self.train_loader, self.val_loader, self.restore_transform = dataloader(cfg_data=cfg_data)
 
         if self.net_name in ["CMTL"]:
 

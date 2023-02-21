@@ -2,11 +2,11 @@ import torchvision.transforms as standard_transforms
 from torch.utils.data import DataLoader
 import misc.transforms as own_transforms
 from datasets.SHHB.SHHB import SHHB
-from datasets.SHHB.setting import cfg_data
+from datasets.SHHB.setting import cfg_data as default_cfg_data
 import torch
 
 
-def loading_data():
+def loading_data(cfg_data):
     mean_std = cfg_data.MEAN_STD
     log_para = cfg_data.LOG_PARA
     train_main_transform = own_transforms.Compose(
