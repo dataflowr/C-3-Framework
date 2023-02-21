@@ -2,11 +2,11 @@ import torchvision.transforms as standard_transforms
 from torch.utils.data import DataLoader
 import misc.transforms as own_transforms
 from datasets.UCSD.UCSD import UCSD
-from datasets.UCSD.setting import cfg_data
+from datasets.UCSD.setting import cfg_data as default_cfg_data
 import torch
 
 
-def loading_data(train_mode):
+def loading_data(train_mode, cfg_data):
 
     mean_std = cfg_data.MEAN_STD
     log_para = cfg_data.LOG_PARA
