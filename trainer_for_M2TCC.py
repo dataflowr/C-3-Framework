@@ -55,7 +55,7 @@ class Trainer:
         if self.cfg.PRE_GCC:
             self.net.load_state_dict(torch.load(self.cfg.PRE_GCC_MODEL))
 
-        self.train_loader, self.val_loader, self.restore_transform = dataloader()
+        self.train_loader, self.val_loader, self.restore_transform = dataloader(cfg_data=cfg_data)
 
         if self.cfg.RESUME:
             latest_state = torch.load(self.cfg.RESUME_PATH)

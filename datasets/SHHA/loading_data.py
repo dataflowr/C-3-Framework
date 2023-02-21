@@ -2,12 +2,12 @@ import torchvision.transforms as standard_transforms
 from torch.utils.data import DataLoader
 import misc.transforms as own_transforms
 from datasets.SHHA.SHHA import SHHA
-from datasets.SHHA.setting import cfg_data
+from datasets.SHHA.setting import cfg_data as default_cfg_data
 import torch
 import random
 
 
-def get_min_size(batch):
+def get_min_size(batch, cfg_data):
 
     min_ht = cfg_data.TRAIN_SIZE[0]
     min_wd = cfg_data.TRAIN_SIZE[1]
@@ -22,7 +22,7 @@ def get_min_size(batch):
     return min_ht, min_wd
 
 
-def random_crop(img, den, dst_size):
+def random_crop(img, den, dst_size, cfg_data):
     # dst_size: ht, wd
 
     _, ts_hd, ts_wd = img.shape
@@ -59,7 +59,7 @@ def share_memory(batch):
     return out
 
 
-def SHHA_collate(batch):
+def SHHA_collate(batch, cfg_data):
     # @GJY
     r"""Puts each data field into a tensor with outer dimension batch size"""
 
@@ -69,7 +69,7 @@ def SHHA_collate(batch):
     error_msg = "batch must contain tensors; found {}"
     if isinstance(imgs[0], torch.Tensor) and isinstance(dens[0], torch.Tensor):
 
-        min_ht, min_wd = get_min_size(imgs)
+        min_ht, min_wd = get_min_size(imgs, cfg_data)
 
         # print min_ht, min_wd
 
@@ -78,7 +78,7 @@ def SHHA_collate(batch):
         cropped_imgs = []
         cropped_dens = []
         for i_sample in range(len(batch)):
-            _img, _den = random_crop(imgs[i_sample], dens[i_sample], [min_ht, min_wd])
+            _img, _den = random_crop(imgs[i_sample], dens[i_sample], [min_ht, min_wd], cfg_data)
             cropped_imgs.append(_img)
             cropped_dens.append(_den)
 
@@ -90,7 +90,7 @@ def SHHA_collate(batch):
     raise TypeError((error_msg.format(type(batch[0]))))
 
 
-def loading_data():
+def loading_data(cfg_data):
     mean_std = cfg_data.MEAN_STD
     log_para = cfg_data.LOG_PARA
     factor = cfg_data.LABEL_FACTOR
@@ -124,7 +124,7 @@ def loading_data():
             train_set,
             batch_size=cfg_data.TRAIN_BATCH_SIZE,
             num_workers=8,
-            collate_fn=SHHA_collate,
+            collate_fn=lambda x: SHHA_collate(x, cfg_data),
             shuffle=True,
             drop_last=True,
         )
