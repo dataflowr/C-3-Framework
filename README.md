@@ -5,7 +5,7 @@
 - extension to datasets published recently: VSCrowd, Fudan-UCC
 
 -------------------
-BONJOUR CHI!
+
 # **C**rowd **C**ounting **C**ode Framework (C^3-Framework) 
 
 # Python 3 dev version!
