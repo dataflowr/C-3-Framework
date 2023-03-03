@@ -25,7 +25,9 @@ class BasicDeconv(nn.Module):
     def __init__(self, in_channels, out_channels, kernel_size, stride=1, use_bn=False):
         super(BasicDeconv, self).__init__()
         self.use_bn = use_bn
-        self.tconv = nn.ConvTranspose2d(in_channels, out_channels, kernel_size, stride=stride, bias=not self.use_bn)
+        self.tconv = nn.ConvTranspose2d(
+            in_channels, out_channels, kernel_size, stride=stride, bias=not self.use_bn
+        )
         self.bn = nn.InstanceNorm2d(out_channels, affine=True) if self.use_bn else None
 
     def forward(self, x):
@@ -40,15 +42,19 @@ class SAModule_Head(nn.Module):
     def __init__(self, in_channels, out_channels, use_bn):
         super(SAModule_Head, self).__init__()
         branch_out = out_channels // 4
-        self.branch1x1 = BasicConv(in_channels, branch_out, use_bn=use_bn,
-                            kernel_size=1)
-        self.branch3x3 = BasicConv(in_channels, branch_out, use_bn=use_bn,
-                            kernel_size=3, padding=1)
-        self.branch5x5 = BasicConv(in_channels, branch_out, use_bn=use_bn,
-                            kernel_size=5, padding=2)
-        self.branch7x7 = BasicConv(in_channels, branch_out, use_bn=use_bn,
-                            kernel_size=7, padding=3)
-    
+        self.branch1x1 = BasicConv(
+            in_channels, branch_out, use_bn=use_bn, kernel_size=1
+        )
+        self.branch3x3 = BasicConv(
+            in_channels, branch_out, use_bn=use_bn, kernel_size=3, padding=1
+        )
+        self.branch5x5 = BasicConv(
+            in_channels, branch_out, use_bn=use_bn, kernel_size=5, padding=2
+        )
+        self.branch7x7 = BasicConv(
+            in_channels, branch_out, use_bn=use_bn, kernel_size=7, padding=3
+        )
+
     def forward(self, x):
         branch1x1 = self.branch1x1(x)
         branch3x3 = self.branch3x3(x)
@@ -62,27 +68,28 @@ class SAModule(nn.Module):
     def __init__(self, in_channels, out_channels, use_bn):
         super(SAModule, self).__init__()
         branch_out = out_channels // 4
-        self.branch1x1 = BasicConv(in_channels, branch_out, use_bn=use_bn,
-                            kernel_size=1)
+        self.branch1x1 = BasicConv(
+            in_channels, branch_out, use_bn=use_bn, kernel_size=1
+        )
         self.branch3x3 = nn.Sequential(
-                        BasicConv(in_channels, 2*branch_out, use_bn=use_bn,
-                            kernel_size=1),
-                        BasicConv(2*branch_out, branch_out, use_bn=use_bn,
-                            kernel_size=3, padding=1),
-                        )
+            BasicConv(in_channels, 2 * branch_out, use_bn=use_bn, kernel_size=1),
+            BasicConv(
+                2 * branch_out, branch_out, use_bn=use_bn, kernel_size=3, padding=1
+            ),
+        )
         self.branch5x5 = nn.Sequential(
-                        BasicConv(in_channels, 2*branch_out, use_bn=use_bn,
-                            kernel_size=1),
-                        BasicConv(2*branch_out, branch_out, use_bn=use_bn,
-                            kernel_size=5, padding=2),
-                        )
+            BasicConv(in_channels, 2 * branch_out, use_bn=use_bn, kernel_size=1),
+            BasicConv(
+                2 * branch_out, branch_out, use_bn=use_bn, kernel_size=5, padding=2
+            ),
+        )
         self.branch7x7 = nn.Sequential(
-                        BasicConv(in_channels, 2*branch_out, use_bn=use_bn,
-                            kernel_size=1),
-                        BasicConv(2*branch_out, branch_out, use_bn=use_bn,
-                            kernel_size=7, padding=3),
-                        )
-    
+            BasicConv(in_channels, 2 * branch_out, use_bn=use_bn, kernel_size=1),
+            BasicConv(
+                2 * branch_out, branch_out, use_bn=use_bn, kernel_size=7, padding=3
+            ),
+        )
+
     def forward(self, x):
         branch1x1 = self.branch1x1(x)
         branch3x3 = self.branch3x3(x)
@@ -108,18 +115,18 @@ class SANet(nn.Module):
             SAModule(128, 128, use_bn),
             nn.MaxPool2d(2, 2),
             SAModule(128, 128, use_bn),
-            )
+        )
 
         self.decoder = nn.Sequential(
             BasicConv(128, 64, use_bn=use_bn, kernel_size=9, padding=4),
             BasicDeconv(64, 64, 2, stride=2, use_bn=use_bn),
             BasicConv(64, 32, use_bn=use_bn, kernel_size=7, padding=3),
             BasicDeconv(32, 32, 2, stride=2, use_bn=use_bn),
-            BasicConv(32, 16,  use_bn=use_bn, kernel_size=5, padding=2),
+            BasicConv(32, 16, use_bn=use_bn, kernel_size=5, padding=2),
             BasicDeconv(16, 16, 2, stride=2, use_bn=use_bn),
-            BasicConv(16, 16,  use_bn=use_bn, kernel_size=3, padding=1),
+            BasicConv(16, 16, use_bn=use_bn, kernel_size=3, padding=1),
             BasicConv(16, 1, use_bn=False, kernel_size=1),
-            )
+        )
         initialize_weights(self.modules())
 
     def forward(self, x):
