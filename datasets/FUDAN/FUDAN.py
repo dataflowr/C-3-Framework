@@ -12,7 +12,7 @@ import pandas as pd
 from config import cfg
 
 
-class SHHB(data.Dataset):
+class Fudan(data.Dataset):
     def __init__(
         self,
         data_path,

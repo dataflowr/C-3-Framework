@@ -1,8 +1,8 @@
 import torchvision.transforms as standard_transforms
 from torch.utils.data import DataLoader
 import misc.transforms as own_transforms
-from datasets.SHHB.SHHB import SHHB
-from datasets.SHHB.setting import cfg_data
+from datasets.FUDAN.FUDAN import Fudan
+from datasets.FUDAN.setting import cfg_data
 import torch
 
 
@@ -29,7 +29,7 @@ def loading_data():
         [own_transforms.DeNormalize(*mean_std), standard_transforms.ToPILImage()]
     )
 
-    train_set = SHHB(
+    train_set = Fudan(
         cfg_data.DATA_PATH + "/train",
         "train",
         main_transform=train_main_transform,
@@ -44,7 +44,7 @@ def loading_data():
         drop_last=True,
     )
 
-    val_set = SHHB(
+    val_set = Fudan(
         cfg_data.DATA_PATH + "/test",
         "test",
         main_transform=val_main_transform,
