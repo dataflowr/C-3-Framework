@@ -1,16 +1,7 @@
-import torch
-import torch.nn as nn
-from torch.nn.parameter import Parameter
-from torch.nn import functional as F
-from torch.autograd import Variable
-from torch.nn.modules.loss import _Loss
 from torch.nn.modules import Module
-from post_prob import Post_Prob
-from bay_loss_trainer import parse_args
+import torch
 
-import numpy as np
-
-class Bay_Loss(_Loss):
+class Bay_Loss(Module):
     def __init__(self, use_background, device):
         super(Bay_Loss, self).__init__()
         self.device = device
@@ -33,26 +24,7 @@ class Bay_Loss(_Loss):
 
             loss += torch.sum(torch.abs(target - pre_count))
         loss = loss / len(prob_list)
-
         return loss
 
-if __name__ == "__main__":
-    args=parse_args()
-    data = torch.zeros(1, 1, 1, 1)
-    data += 0.001
-    target = torch.zeros(1, 1, 1, 1)
-    data = Variable(data, requires_grad=True)
-    target = Variable(target)
-    device=torch.device("cpu")
-    post_prob=Post_Prob(args.sigma,
-                        args.crop_size,
-                        args.downsample_ratio,
-                        args.background_ratio,
-                        args.use_background,
-                        device)
-    prob_list = post_prob(points, st_sizes)
-    model = Bay_Loss(True,device)
-    loss = model(post_prob,data, target)
-    loss.backward()
-    print(loss)
-    print(data.grad)
+
+
