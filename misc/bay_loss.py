@@ -33,6 +33,7 @@ class Bay_Loss(_Loss):
 
             loss += torch.sum(torch.abs(target - pre_count))
         loss = loss / len(prob_list)
+
         return loss
 
 if __name__ == "__main__":
